@@ -1,21 +1,37 @@
-<<<<<<< HEAD
-# React + Vite
+# Echo Garden
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**Echo Garden** is a personal **central hub for React projects** — a space to explore, launch, and showcase web apps I've built.  
+It includes a built-in **web radio player** that provides a calm background while working or browsing the projects.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Overview
+Echo Garden acts as both a **project launcher** and a **development playground**.  
+It’s designed with simplicity and aesthetics in mind — combining functional structure with small UI touches that demonstrate frontend craftsmanship.
 
-## React Compiler
+---
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Features
+- Built-in radio player with customizable stream URL  
+- Persistent settings saved in the browser (via `localStorage`)  
+- Sidebar navigation for quick access to different projects or sections  
+- Responsive layout using Bootstrap  
+- Clean and minimal interface that adapts across screens  
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
-=======
-# echo-garden
-A central hub for react projects
->>>>>>> f8e356d8a319cfa90250a26a0590559653a76720
+##  Technologies
+- React (for component structure and routing)  
+- Bootstrap 5 (for layout and styling)  
+- HTML5 Audio API (for radio playback)  
+- Local Storage (for persistence)  
+- Vite (for development and build)  
+
+---
+
+## 🚀 Run Locally
+```bash
+git clone https://github.com/grigoris24/echo-garden.git
+cd echo-garden
+yarn install     # or npm install
+yarn dev         # or npm run dev
