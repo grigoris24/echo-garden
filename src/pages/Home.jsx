@@ -12,6 +12,11 @@ export default function Home() {
       description: "A persistent task tracker using localStorage to remember your tasks.",
       link: "/todo"
     },
+     {
+      title: "Calculator",
+      description: "A working calculator with history using localStorage",
+      link: "/calculator"
+    },
     {
       title: "Settings",
       description: "Change your web radio station URL and personalize your experience.",
