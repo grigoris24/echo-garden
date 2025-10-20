@@ -84,6 +84,16 @@ export default function Layout() {
             </NavLink>
 
             <NavLink
+              to="/calculator"
+              className={({ isActive }) =>
+                `nav-link mb-2 ${isActive ? "active-link" : "text-white"}`
+              }
+            >
+              Calculator
+            </NavLink>
+
+
+            <NavLink
               to="/settings"
               className={({ isActive }) =>
                 `nav-link mb-2 ${isActive ? "active-link" : "text-white"}`

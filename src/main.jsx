@@ -9,6 +9,7 @@ import Home from "./pages/Home.jsx"
 import Counter from "./pages/Counter.jsx"
 import Settings from "./pages/Settings.jsx"
 import Todo from "./pages/Todo.jsx"
+import Calculator from "./pages/Calculator.jsx"
 
 const router = createBrowserRouter([
   {
@@ -18,6 +19,7 @@ const router = createBrowserRouter([
       { path: "/", element: <Home /> },
       { path: "/counter", element: <Counter /> },
       { path: "/todo", element: <Todo /> },
+      { path: "/calculator", element: <Calculator /> },
       { path: "/settings", element: <Settings /> },
     ],
   },
