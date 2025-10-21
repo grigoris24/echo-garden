@@ -1,0 +1,46 @@
+<!--?xml version="1.0" encoding="UTF-8"?-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300" width="128" height="128" fill="none">
+  <title>Echo Garden Logo</title>
+  <desc>Minimal circular crest with crescent moon and tree, in NieR-inspired monochrome style.</desc>
+
+  <!-- Outer ring -->
+  <circle cx="150" cy="150" r="135" stroke="#1b1b1b" stroke-width="12" stroke-linecap="round"></circle>
+
+  <!-- Crescent (using mask) -->
+  <defs>
+    <mask id="crescentMask">
+      <rect x="0" y="0" width="300" height="300" fill="black"></rect>
+      <circle cx="150" cy="150" r="100" fill="white"></circle>
+      <circle cx="180" cy="142" r="85" fill="black"></circle>
+    </mask>
+  </defs>
+  <circle cx="150" cy="150" r="100" fill="#1b1b1b" mask="url(#crescentMask)"></circle>
+
+  <!-- Tree trunk -->
+  <path d="M150 230
+           C150 170 148 130 148 90
+           C148 70 152 68 154 90
+           C156 130 156 170 156 230" stroke="#1b1b1b" stroke-width="10" stroke-linecap="round"></path>
+
+  <!-- Branches -->
+  <g stroke="#1b1b1b" stroke-width="8" stroke-linecap="round">
+    <path d="M150 140 L110 120"></path>
+    <path d="M150 125 L190 110"></path>
+    <path d="M150 160 L112 150"></path>
+    <path d="M150 150 L190 165"></path>
+  </g>
+
+  <!-- Leaves -->
+  <g fill="#1b1b1b">
+    <circle cx="104" cy="118" r="6"></circle>
+    <circle cx="196" cy="108" r="6"></circle>
+    <circle cx="108" cy="148" r="6"></circle>
+    <circle cx="192" cy="166" r="6"></circle>
+  </g>
+
+  <!-- Ground -->
+  <path d="M100 232
+           C115 238 130 238 145 232
+           C160 226 175 226 190 232
+           C205 238 220 238 235 232" stroke="#1b1b1b" stroke-width="8" stroke-linecap="round"></path>
+</svg>
