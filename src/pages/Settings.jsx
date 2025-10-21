@@ -9,10 +9,10 @@ export default function Settings() {
   const [showAlert, setShowAlert] = useState(false)
 
   const builtInWallpapers = [
-    { name: "Aurora", url: "/wallpapers/aurora.jpg" },
-    { name: "Mountains", url: "/wallpapers/mountains.jpg" },
-    { name: "Abstract", url: "/wallpapers/abstract.jpg" },
-    { name: "Night", url: "/wallpapers/night.jpg" },
+    { name: "Aurora", url: `${import.meta.env.BASE_URL}wallpapers/aurora.jpg` },
+    { name: "Mountains", url: `${import.meta.env.BASE_URL}wallpapers/mountains.jpg` },
+    { name: "Abstract", url: `${import.meta.env.BASE_URL}wallpapers/abstract.jpg` },
+    { name: "Night", url: `${import.meta.env.BASE_URL}wallpapers/night.jpg` },
   ]
 
   useEffect(() => {
@@ -27,14 +27,13 @@ export default function Settings() {
     setRadioUrl(newUrl)
     localStorage.setItem("radioUrl", newUrl)
     localStorage.setItem("weatherApiKey", weatherApiKey)
-    localStorage.setItem("wallpaper", wallpaper)
     setShowAlert(true)
     setTimeout(() => setShowAlert(false), 3000)
   }
 
   const handleWallpaperSelect = (url) => {
-    setWallpaper(url)
     setCustomWallpaper(null)
+    setWallpaper(url)
     localStorage.setItem("wallpaper", url)
   }
 
@@ -85,7 +84,6 @@ export default function Settings() {
 
           <div className="mb-4">
             <h5 className="text-muted mb-3">API Keys</h5>
-
             <label className="form-label">Weather API Key</label>
             <input
               type="text"
@@ -102,72 +100,6 @@ export default function Settings() {
             </small>
           </div>
 
-          <hr className="my-4" />
-
-          <div className="mb-4">
-            <h5 className="text-muted mb-3">Wallpaper</h5>
-            <div className="row">
-              {builtInWallpapers.map((wp, index) => (
-                <div key={index} className="col-6 col-md-3 mb-3">
-                  <div
-                    className={`wallpaper-preview ${wallpaper === wp.url ? "selected" : ""}`}
-                    onClick={() => handleWallpaperSelect(wp.url)}
-                    style={{
-                      backgroundImage: `url(${wp.url})`,
-                      backgroundSize: "cover",
-                      backgroundPosition: "center",
-                      height: "100px",
-                      borderRadius: "8px",
-                      cursor: "pointer",
-                      position: "relative",
-                      boxShadow:
-                        wallpaper === wp.url
-                          ? "0 0 0 3px #0d6efd"
-                          : "0 0 4px rgba(0,0,0,0.2)",
-                    }}
-                  >
-                    <div
-                      style={{
-                        position: "absolute",
-                        bottom: "6px",
-                        left: "8px",
-                        color: "white",
-                        textShadow: "1px 1px 3px black",
-                        fontSize: "0.9rem",
-                      }}
-                    >
-                      {wp.name}
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <div className="mt-3">
-              <label className="form-label">Custom Wallpaper</label>
-              <input
-                type="file"
-                accept="image/*"
-                className="form-control"
-                onChange={handleFileUpload}
-              />
-              {customWallpaper && (
-                <div className="mt-3">
-                  <img
-                    src={customWallpaper}
-                    alt="Custom Wallpaper Preview"
-                    style={{
-                      width: "100%",
-                      maxWidth: "400px",
-                      borderRadius: "8px",
-                      boxShadow: "0 2px 8px rgba(0,0,0,0.2)",
-                    }}
-                  />
-                </div>
-              )}
-            </div>
-          </div>
-
           <div className="mt-4">
             <button type="submit" className="btn btn-primary">
               Save
@@ -176,6 +108,73 @@ export default function Settings() {
         </form>
 
         <hr className="my-5" />
+
+        <div className="mb-4">
+          <h5 className="text-muted mb-3">Wallpaper</h5>
+          <div className="row">
+            {builtInWallpapers.map((wp, index) => (
+              <div key={index} className="col-6 col-md-3 mb-3">
+                <div
+                  className={`wallpaper-preview ${wallpaper === wp.url ? "selected" : ""}`}
+                  onClick={() => handleWallpaperSelect(wp.url)}
+                  style={{
+                    backgroundImage: `url(${wp.url})`,
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                    height: "100px",
+                    borderRadius: "8px",
+                    cursor: "pointer",
+                    position: "relative",
+                    boxShadow:
+                      wallpaper === wp.url
+                        ? "0 0 0 3px #0d6efd"
+                        : "0 0 4px rgba(0,0,0,0.2)",
+                  }}
+                >
+                  <div
+                    style={{
+                      position: "absolute",
+                      bottom: "6px",
+                      left: "8px",
+                      color: "white",
+                      textShadow: "1px 1px 3px black",
+                      fontSize: "0.9rem",
+                    }}
+                  >
+                    {wp.name}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-3">
+            <label className="form-label">Custom Wallpaper</label>
+            <input
+              type="file"
+              accept="image/*"
+              className="form-control"
+              onChange={handleFileUpload}
+            />
+            {customWallpaper && (
+              <div className="mt-3">
+                <img
+                  src={customWallpaper}
+                  alt="Custom Wallpaper Preview"
+                  style={{
+                    width: "100%",
+                    maxWidth: "400px",
+                    borderRadius: "8px",
+                    boxShadow: "0 2px 8px rgba(0,0,0,0.2)",
+                  }}
+                />
+              </div>
+            )}
+          </div>
+        </div>
+
+        <hr className="my-5" />
+
         <div className="text-center text-muted small">
           <p className="mb-1 fw-semibold text-dark">Echo Garden</p>
           <p className="mb-1">Version 0.0.3</p>

@@ -18,7 +18,7 @@ export default function Layout() {
   const [time, setTime] = useState(new Date())
   const [weather, setWeather] = useState(null)
   const [error, setError] = useState(null)
-  const [wallpaper, setWallpaper] = useState("/wallpapers/aurora.jpg")
+  const [wallpaper, setWallpaper] = useState(`${import.meta.env.BASE_URL}wallpapers/aurora.jpg`)
   const audioRef = useRef(null)
   const navigate = useNavigate()
 
@@ -75,9 +75,15 @@ export default function Layout() {
   }, [])
 
   useEffect(() => {
-    const savedWallpaper = localStorage.getItem("wallpaper")
-    if (savedWallpaper) setWallpaper(savedWallpaper)
-  }, [])
+  const savedWallpaper = localStorage.getItem("wallpaper")
+  if (savedWallpaper) {
+    if (savedWallpaper.startsWith("/wallpapers/")) {
+      setWallpaper(`${import.meta.env.BASE_URL}${savedWallpaper.slice(1)}`)
+    } else {
+      setWallpaper(savedWallpaper)
+    }
+  }
+}, [])
 
   return (
     <div
