@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react"
 import { FaTrash, FaPlus } from "react-icons/fa"
+import { motion } from "framer-motion"
 
 export default function Todo() {
   const [tasks, setTasks] = useState([])
@@ -23,11 +24,7 @@ export default function Todo() {
   }
 
   const toggleTask = (id) => {
-    setTasks(
-      tasks.map((t) =>
-        t.id === id ? { ...t, done: !t.done } : t
-      )
-    )
+    setTasks(tasks.map((t) => (t.id === id ? { ...t, done: !t.done } : t)))
   }
 
   const deleteTask = (id) => {
@@ -35,51 +32,59 @@ export default function Todo() {
   }
 
   return (
-    <div className="container py-4">
-      <h2 className="fw-bold mb-4 text-center">Todo List</h2>
+    <div className="container py-5 d-flex justify-content-center">
+      <motion.div
+        className="p-4 rounded-4 shadow-lg todo-window"
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        style={{ width: "100%", maxWidth: "600px" }}
+      >
+        <h2 className="fw-bold mb-4 text-center">Todo List</h2>
 
-      <form onSubmit={addTask} className="d-flex justify-content-center mb-4">
-        <input
-          type="text"
-          className="form-control w-50 me-2 shadow-sm"
-          placeholder="Add a new task..."
-          value={newTask}
-          onChange={(e) => setNewTask(e.target.value)}
-        />
-        <button className="btn btn-primary d-flex align-items-center gap-1">
-          <FaPlus /> Add
-        </button>
-      </form>
+        <form onSubmit={addTask} className="d-flex justify-content-center mb-4">
+          <input
+            type="text"
+            className="form-control me-2 shadow-sm"
+            placeholder="Add a new task..."
+            value={newTask}
+            onChange={(e) => setNewTask(e.target.value)}
+          />
+          <button className="btn btn-primary d-flex align-items-center gap-1">
+            <FaPlus /> Add
+          </button>
+        </form>
 
-      {tasks.length === 0 ? (
-        <p className="text-center text-muted">No tasks yet.</p>
-      ) : (
-        <ul className="list-group shadow-sm">
-          {tasks.map((task) => (
-            <li
-              key={task.id}
-              className="list-group-item d-flex justify-content-between align-items-center"
-            >
-              <span
-                onClick={() => toggleTask(task.id)}
-                style={{
-                  textDecoration: task.done ? "line-through" : "none",
-                  color: task.done ? "gray" : "black",
-                  cursor: "pointer",
-                }}
+        {tasks.length === 0 ? (
+          <p className="text-center text-muted">No tasks yet.</p>
+        ) : (
+          <ul className="list-group shadow-sm">
+            {tasks.map((task) => (
+              <li
+                key={task.id}
+                className="list-group-item d-flex justify-content-between align-items-center"
               >
-                {task.text}
-              </span>
-              <button
-                className="btn btn-sm btn-outline-danger"
-                onClick={() => deleteTask(task.id)}
-              >
-                <FaTrash />
-              </button>
-            </li>
-          ))}
-        </ul>
-      )}
+                <span
+                  onClick={() => toggleTask(task.id)}
+                  style={{
+                    textDecoration: task.done ? "line-through" : "none",
+                    color: task.done ? "gray" : "black",
+                    cursor: "pointer",
+                  }}
+                >
+                  {task.text}
+                </span>
+                <button
+                  className="btn btn-sm btn-outline-danger"
+                  onClick={() => deleteTask(task.id)}
+                >
+                  <FaTrash />
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
+      </motion.div>
     </div>
   )
 }

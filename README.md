@@ -1,7 +1,7 @@
 # Echo Garden
 
-**Echo Garden** is a personal **central hub for React projects** — a space to explore, launch, and showcase web apps I've built.  
-It includes a built-in **web radio player** that provides a calm background while working or browsing the projects.
+**Echo Garden** is an OS-like project — a space to explore, launch, and showcase web apps.  
+It includes a built-in **web radio player** that provides a calm background while working or browsing the projects, and a built-in **weather app**.
 
 ---
 
@@ -13,7 +13,9 @@ It’s designed with simplicity and aesthetics in mind — combining functional 
 
 ## Features
 - Built-in radio player with customizable stream URL  
+- Built-in weather app
 - Persistent settings saved in the browser (via `localStorage`)  
+- Ability to choose your own wallpaper
 - Sidebar navigation for quick access to different projects or sections  
 - Responsive layout using Bootstrap  
 - Clean and minimal interface that adapts across screens  

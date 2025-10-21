@@ -1,4 +1,4 @@
-import { StrictMode } from "react"
+import { useState, useEffect } from "react"
 import { createRoot } from "react-dom/client"
 import { createBrowserRouter, RouterProvider } from "react-router-dom"
 import "bootstrap/dist/css/bootstrap.min.css"
@@ -10,6 +10,7 @@ import Counter from "./pages/Counter.jsx"
 import Settings from "./pages/Settings.jsx"
 import Todo from "./pages/Todo.jsx"
 import Calculator from "./pages/Calculator.jsx"
+import SplashScreen from "./SplashScreen.jsx"
 
 const router = createBrowserRouter([
   {
@@ -25,7 +26,15 @@ const router = createBrowserRouter([
   },
 ])
 
+function App() {
+  const [loading, setLoading] = useState(true)
 
-createRoot(document.getElementById("root")).render(
-  <RouterProvider router={router} />
-)
+  useEffect(() => {
+    const timer = setTimeout(() => setLoading(false), 3000) 
+    return () => clearTimeout(timer)
+  }, [])
+
+  return loading ? <SplashScreen /> : <RouterProvider router={router} />
+}
+
+createRoot(document.getElementById("root")).render(<App />)
