@@ -12,19 +12,25 @@ import Todo from "./pages/Todo.jsx"
 import Calculator from "./pages/Calculator.jsx"
 import SplashScreen from "./SplashScreen.jsx"
 
-const router = createBrowserRouter([
+const router = createBrowserRouter(
+  [
+    {
+      path: "/",
+      element: <Layout />,
+      children: [
+        { index: true, element: <Home /> },
+        { path: "counter", element: <Counter /> },
+        { path: "todo", element: <Todo /> },
+        { path: "calculator", element: <Calculator /> },
+        { path: "settings", element: <Settings /> },
+      ],
+    },
+  ],
   {
-    path: "/",
-    element: <Layout />,
-    children: [
-      { path: "/", element: <Home /> },
-      { path: "/counter", element: <Counter /> },
-      { path: "/todo", element: <Todo /> },
-      { path: "/calculator", element: <Calculator /> },
-      { path: "/settings", element: <Settings /> },
-    ],
-  },
-])
+    basename: import.meta.env.MODE === 'production' ? '/echo-garden/' : '/',
+  }
+)
+
 
 function App() {
   const [loading, setLoading] = useState(true)
