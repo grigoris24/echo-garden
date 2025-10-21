@@ -16,7 +16,7 @@ It’s designed with simplicity and aesthetics in mind — combining functional 
 - Built-in weather app
 - Persistent settings saved in the browser (via `localStorage`)  
 - Ability to choose your own wallpaper
-- Sidebar navigation for quick access to different projects or sections  
+- Taskbar navigation
 - Responsive layout using Bootstrap  
 - Clean and minimal interface that adapts across screens  
 
