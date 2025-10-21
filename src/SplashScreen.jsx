@@ -23,7 +23,12 @@ export default function SplashScreen() {
       animate={{ opacity: fadeOut ? 0 : 1 }}
       transition={{ duration: fadeOut ? 2 : 1, ease: "easeInOut" }}
     >
-      <img src="/splashscreen.png" alt="Splash" className="splash-img" />
+     <img
+        src={`${import.meta.env.BASE_URL}splashscreen.png`}
+        alt="Splash"
+        className="splash-img"
+    />
+
     </motion.div>
   )
 }
