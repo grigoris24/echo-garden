@@ -14,6 +14,7 @@ import {
   FaTimes,
   FaRegStickyNote,
   FaCalendarAlt,
+  FaGamepad,
 } from "react-icons/fa"
 
 export default function Layout() {
@@ -186,6 +187,16 @@ export default function Layout() {
               <FaCalendarAlt />
               <span className="tooltip-text">Calendar</span>
             </NavLink>
+
+            <NavLink to="/tictactoe" className={({ isActive }) => `taskbar-app ${isActive ? "active-app" : ""}`}>
+              <FaTimes />
+              <span className="tooltip-text">Tic Tac Toe</span>
+            </NavLink>
+
+            <NavLink to="/snake" className={({ isActive }) => `taskbar-app ${isActive ? "active-app" : ""}`}> 
+              <FaGamepad /> 
+              <span className="tooltip-text">Snake</span> 
+            </NavLink> 
           </div>
         </div>
 
@@ -249,6 +260,8 @@ export default function Layout() {
         <NavLink to="/calculator" onClick={() => setMenuOpen(false)}>Calculator</NavLink>
         <NavLink to="/notes" onClick={() => setMenuOpen(false)}>Notes</NavLink>
         <NavLink to="/calendar" onClick={() => setMenuOpen(false)}>Calendar</NavLink>
+        <NavLink to="/tictactoe" onClick={() => setMenuOpen(false)}>Tic Tac Toe</NavLink>
+        <NavLink to="/snake" onClick={() => setMenuOpen(false)}>Snake</NavLink>
       </div>
     </div>
   )

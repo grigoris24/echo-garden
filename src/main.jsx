@@ -13,6 +13,8 @@ import Calculator from "./pages/Calculator.jsx"
 import SplashScreen from "./SplashScreen.jsx"
 import Notes from "./pages/Notes.jsx"
 import Calendar from "./pages/Calendar.jsx"
+import TicTacToe from "./pages/TicTacToe.jsx"
+import Snake from "./pages/Snake.jsx"
 
 const router = createBrowserRouter(
   [
@@ -27,6 +29,8 @@ const router = createBrowserRouter(
         { path: "notes", element: <Notes /> },
         { path: "settings", element: <Settings /> },
         { path: "calendar", element: <Calendar /> },
+        { path: "tictactoe", element: <TicTacToe /> },
+        { path: "snake", element: <Snake /> },
       ],
     },
   ],

@@ -1,7 +1,15 @@
 import { useState, useEffect, useRef } from "react"
 import { useNavigate } from "react-router-dom"
 import Draggable from "react-draggable"
-import { FaCalculator, FaListAlt, FaHashtag, FaRegStickyNote, FaCalendarAlt } from "react-icons/fa"
+import {
+  FaCalculator,
+  FaListAlt,
+  FaHashtag,
+  FaRegStickyNote,
+  FaCalendarAlt,
+  FaTimes, 
+  FaGamepad
+} from "react-icons/fa"
 
 export default function Home() {
   const navigate = useNavigate()
@@ -10,8 +18,10 @@ export default function Home() {
     { id: "counter", name: "Counter", icon: <FaHashtag />, link: "/counter" },
     { id: "todo", name: "Todo List", icon: <FaListAlt />, link: "/todo" },
     { id: "calculator", name: "Calculator", icon: <FaCalculator />, link: "/calculator" },
-    { id: "notes", name: "Notes", icon: <FaRegStickyNote />, link: "/notes" }, 
+    { id: "notes", name: "Notes", icon: <FaRegStickyNote />, link: "/notes" },
     { id: "calendar", name: "Calendar", icon: <FaCalendarAlt />, link: "/calendar" },
+    { id: "tictactoe", name: "Tic Tac Toe", icon: <FaTimes />, link: "/tictactoe" },
+    { id: "snake", name: "Snake", icon: <FaGamepad />, link: "/snake" },
   ]
 
   const [apps, setApps] = useState(defaultApps)
@@ -23,7 +33,7 @@ export default function Home() {
     const iconWidth = 90
     const iconHeight = 100
     const maxX = window.innerWidth - iconWidth
-    const maxY = window.innerHeight - iconHeight - 60 
+    const maxY = window.innerHeight - iconHeight - 60
     return {
       x: Math.max(0, Math.min(x, maxX)),
       y: Math.max(0, Math.min(y, maxY)),
@@ -47,7 +57,9 @@ export default function Home() {
     if (savedOrder) {
       try {
         const order = JSON.parse(savedOrder)
-        const ordered = order.map((id) => defaultApps.find((a) => a.id === id)).filter(Boolean)
+        const ordered = order
+          .map((id) => defaultApps.find((a) => a.id === id))
+          .filter(Boolean)
         setApps(ordered)
       } catch {
         setApps(defaultApps)
