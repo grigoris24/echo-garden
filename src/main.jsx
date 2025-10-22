@@ -11,6 +11,8 @@ import Settings from "./pages/Settings.jsx"
 import Todo from "./pages/Todo.jsx"
 import Calculator from "./pages/Calculator.jsx"
 import SplashScreen from "./SplashScreen.jsx"
+import Notes from "./pages/Notes.jsx"
+import Calendar from "./pages/Calendar.jsx"
 
 const router = createBrowserRouter(
   [
@@ -22,7 +24,9 @@ const router = createBrowserRouter(
         { path: "counter", element: <Counter /> },
         { path: "todo", element: <Todo /> },
         { path: "calculator", element: <Calculator /> },
+        { path: "notes", element: <Notes /> },
         { path: "settings", element: <Settings /> },
+        { path: "calendar", element: <Calendar /> },
       ],
     },
   ],

@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react"
 import { useNavigate } from "react-router-dom"
 import Draggable from "react-draggable"
-import { FaCalculator, FaListAlt, FaHashtag } from "react-icons/fa"
+import { FaCalculator, FaListAlt, FaHashtag, FaRegStickyNote, FaCalendarAlt } from "react-icons/fa"
 
 export default function Home() {
   const navigate = useNavigate()
@@ -10,6 +10,8 @@ export default function Home() {
     { id: "counter", name: "Counter", icon: <FaHashtag />, link: "/counter" },
     { id: "todo", name: "Todo List", icon: <FaListAlt />, link: "/todo" },
     { id: "calculator", name: "Calculator", icon: <FaCalculator />, link: "/calculator" },
+    { id: "notes", name: "Notes", icon: <FaRegStickyNote />, link: "/notes" }, 
+    { id: "calendar", name: "Calendar", icon: <FaCalendarAlt />, link: "/calendar" },
   ]
 
   const [apps, setApps] = useState(defaultApps)
@@ -17,18 +19,35 @@ export default function Home() {
   const [contextMenu, setContextMenu] = useState({ visible: false, x: 0, y: 0 })
   const [isEditable, setIsEditable] = useState(false)
 
+  const clampPosition = (x, y) => {
+    const iconWidth = 90
+    const iconHeight = 100
+    const maxX = window.innerWidth - iconWidth
+    const maxY = window.innerHeight - iconHeight - 60 
+    return {
+      x: Math.max(0, Math.min(x, maxX)),
+      y: Math.max(0, Math.min(y, maxY)),
+    }
+  }
+
   useEffect(() => {
     const savedPositions = localStorage.getItem("iconPositions")
     const savedOrder = localStorage.getItem("iconOrder")
 
-    if (savedPositions) setPositions(JSON.parse(savedPositions))
+    if (savedPositions) {
+      const parsed = JSON.parse(savedPositions)
+      const clamped = {}
+      Object.entries(parsed).forEach(([id, pos]) => {
+        const safe = clampPosition(pos.x, pos.y)
+        clamped[id] = safe
+      })
+      setPositions(clamped)
+    }
 
     if (savedOrder) {
       try {
         const order = JSON.parse(savedOrder)
-        const ordered = order
-          .map((id) => defaultApps.find((a) => a.id === id))
-          .filter(Boolean)
+        const ordered = order.map((id) => defaultApps.find((a) => a.id === id)).filter(Boolean)
         setApps(ordered)
       } catch {
         setApps(defaultApps)
@@ -36,11 +55,25 @@ export default function Home() {
     }
   }, [])
 
-  const handleStop = (e, data, appId) => {
-    const newPositions = {
-      ...positions,
-      [appId]: { x: data.x, y: data.y },
+  useEffect(() => {
+    const handleResize = () => {
+      setPositions((prev) => {
+        const updated = {}
+        for (const id in prev) {
+          const safe = clampPosition(prev[id].x, prev[id].y)
+          updated[id] = safe
+        }
+        localStorage.setItem("iconPositions", JSON.stringify(updated))
+        return updated
+      })
     }
+    window.addEventListener("resize", handleResize)
+    return () => window.removeEventListener("resize", handleResize)
+  }, [])
+
+  const handleStop = (e, data, appId) => {
+    const safe = clampPosition(data.x, data.y)
+    const newPositions = { ...positions, [appId]: safe }
     setPositions(newPositions)
     localStorage.setItem("iconPositions", JSON.stringify(newPositions))
   }
@@ -71,7 +104,8 @@ export default function Home() {
     const sorted = [...apps].sort((a, b) => a.name.localeCompare(b.name))
     const newPositions = {}
     sorted.forEach((app, i) => {
-      newPositions[app.id] = { x: 100 + (i % 5) * 120, y: 100 + Math.floor(i / 5) * 120 }
+      const safe = clampPosition(100 + (i % 5) * 120, 100 + Math.floor(i / 5) * 120)
+      newPositions[app.id] = safe
     })
 
     setApps(sorted)
@@ -90,7 +124,14 @@ export default function Home() {
     >
       {apps.map((app, index) => {
         const nodeRef = useRef(null)
-        const pos = positions[app.id] || { x: 100 + index * 120, y: 100 }
+        const marginLeft = 20
+        const marginTop = 80
+        const spacing = 120
+        const iconsPerRow = Math.floor(window.innerWidth / spacing) || 1
+        const pos = positions[app.id] || clampPosition(
+          marginLeft + (index % iconsPerRow) * spacing,
+          marginTop + Math.floor(index / iconsPerRow) * spacing
+        )
 
         const iconElement = (
           <div
@@ -104,7 +145,7 @@ export default function Home() {
               alignItems: "center",
               width: "90px",
             }}
-            onClick={() => !isEditable && navigate(app.link)} 
+            onClick={() => !isEditable && navigate(app.link)}
           >
             <div className="icon-circle d-flex justify-content-center align-items-center">
               {app.icon}

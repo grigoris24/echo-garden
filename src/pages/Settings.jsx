@@ -26,7 +26,10 @@ export default function Settings() {
     e.preventDefault()
     setRadioUrl(newUrl)
     localStorage.setItem("radioUrl", newUrl)
+
     localStorage.setItem("weatherApiKey", weatherApiKey)
+    window.dispatchEvent(new Event("manual-update")) 
+
     setShowAlert(true)
     setTimeout(() => setShowAlert(false), 3000)
   }
@@ -177,8 +180,10 @@ export default function Settings() {
 
         <div className="text-center text-muted small">
           <p className="mb-1 fw-semibold text-dark">Echo Garden</p>
-          <p className="mb-1">Version 0.0.3</p>
-          <p className="mb-1">Created by <span className="fw-semibold">Grigoris Papadopoulos</span></p>
+          <p className="mb-1">Version 0.0.5</p>
+          <p className="mb-1">
+            Created by <span className="fw-semibold">Grigoris Papadopoulos</span>
+          </p>
           <p className="mb-0">
             © {new Date().getFullYear()} Echo Garden — All rights reserved.
           </p>
