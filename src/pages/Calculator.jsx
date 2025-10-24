@@ -24,15 +24,21 @@ export default function Calculator() {
   const handleDelete = () => setInput((prev) => prev.slice(0, -1))
 
   const handleCalculate = () => {
-    try {
-      const res = eval(input)
-      setResult(res)
-      setHistory([{ expression: input, result: res }, ...history.slice(0, 9)])
-      setInput("")
-    } catch {
-      setResult("Error")
-    }
+  try {
+    const res = safeEvaluate(input)
+    if (res === undefined || isNaN(res)) throw new Error()
+
+    const rounded = Math.round((res + Number.EPSILON) * 1e9) / 1e9
+    const cleaned = parseFloat(rounded.toFixed(9)).toString()
+
+    setResult(cleaned)
+    setHistory([{ expression: input, result: cleaned }, ...history.slice(0, 9)])
+    setInput("")
+  } catch {
+    setResult("Error")
   }
+}
+
 
   const clearHistory = () => {
     setHistory([])
@@ -46,6 +52,68 @@ export default function Calculator() {
     "0", ".", "=", "+"
   ]
 
+  const safeEvaluate = (expr) => {
+    const sanitized = expr.replace(/[^0-9+\-*/().]/g, "") 
+
+    const tokens = sanitized
+      .replace(/([+\-*/()])/g, " $1 ")
+      .trim()
+      .split(/\s+/)
+
+    const outputQueue = []
+    const operatorStack = []
+
+    const precedence = { "+": 1, "-": 1, "*": 2, "/": 2 }
+    const isOperator = (t) => ["+", "-", "*", "/"].includes(t)
+
+    tokens.forEach((token) => {
+      if (!isNaN(parseFloat(token))) {
+        outputQueue.push(parseFloat(token))
+      } else if (isOperator(token)) {
+        while (
+          operatorStack.length &&
+          isOperator(operatorStack[operatorStack.length - 1]) &&
+          precedence[operatorStack[operatorStack.length - 1]] >= precedence[token]
+        ) {
+          outputQueue.push(operatorStack.pop())
+        }
+        operatorStack.push(token)
+      } else if (token === "(") {
+        operatorStack.push(token)
+      } else if (token === ")") {
+        while (
+          operatorStack.length &&
+          operatorStack[operatorStack.length - 1] !== "("
+        ) {
+          outputQueue.push(operatorStack.pop())
+        }
+        operatorStack.pop()
+      }
+    })
+
+    while (operatorStack.length) {
+      outputQueue.push(operatorStack.pop())
+    }
+
+    const stack = []
+    outputQueue.forEach((token) => {
+      if (typeof token === "number") {
+        stack.push(token)
+      } else {
+        const b = stack.pop()
+        const a = stack.pop()
+        switch (token) {
+          case "+": stack.push(a + b); break
+          case "-": stack.push(a - b); break
+          case "*": stack.push(a * b); break
+          case "/": stack.push(a / b); break
+        }
+      }
+    })
+
+    return stack.pop()
+  }
+
   return (
     <div className="container py-5 d-flex justify-content-center">
       <motion.div
@@ -58,7 +126,6 @@ export default function Calculator() {
         <h2 className="fw-bold mb-4 text-center">Calculator</h2>
 
         <div className="row">
-          {/* Calculator */}
           <div className="col-md-6 mb-4">
             <div className="p-3 rounded-3 bg-white bg-opacity-75 shadow-sm h-100">
               <div className="form-control text-end mb-3 fs-4 bg-light-subtle border-0">
@@ -87,7 +154,6 @@ export default function Calculator() {
             </div>
           </div>
 
-          {/* History */}
           <div className="col-md-6">
             <div className="p-3 rounded-3 bg-white bg-opacity-75 shadow-sm h-100">
               <div className="d-flex justify-content-between align-items-center mb-3">
