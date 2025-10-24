@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react"
-import { FaRedo, FaPlay, FaArrowUp, FaArrowDown, FaArrowLeft, FaArrowRight } from "react-icons/fa"
+import { FaRedo, FaPlay } from "react-icons/fa"
 
 export default function Snake() {
   const [snake, setSnake] = useState([{ x: 8, y: 8 }])
@@ -10,8 +10,17 @@ export default function Snake() {
   const [isGameOver, setIsGameOver] = useState(false)
   const [isRunning, setIsRunning] = useState(false)
   const [score, setScore] = useState(0)
+  const [highScore, setHighScore] = useState(0)
   const boardSize = 20
   const intervalRef = useRef(null)
+
+  const touchStart = useRef({ x: 0, y: 0 })
+  const touchEnd = useRef({ x: 0, y: 0 })
+
+  useEffect(() => {
+    const savedHigh = localStorage.getItem("snakeHighScore")
+    if (savedHigh) setHighScore(Number(savedHigh))
+  }, [])
 
   const getRandomPosition = () => ({
     x: Math.floor(Math.random() * boardSize),
@@ -35,6 +44,12 @@ export default function Snake() {
       ) {
         setIsGameOver(true)
         setIsRunning(false)
+
+        if (score > highScore) {
+          setHighScore(score)
+          localStorage.setItem("snakeHighScore", score)
+        }
+
         return prev
       }
 
@@ -90,6 +105,31 @@ export default function Snake() {
     setNextDirection(newDir)
   }
 
+  const handleTouchStart = (e) => {
+    const touch = e.touches[0]
+    touchStart.current = { x: touch.clientX, y: touch.clientY }
+  }
+
+  const handleTouchEnd = (e) => {
+    const touch = e.changedTouches[0]
+    touchEnd.current = { x: touch.clientX, y: touch.clientY }
+
+    const dx = touchEnd.current.x - touchStart.current.x
+    const dy = touchEnd.current.y - touchStart.current.y
+
+    if (Math.abs(dx) < 30 && Math.abs(dy) < 30) return
+
+    if (Math.abs(dx) > Math.abs(dy)) {
+      if (dx > 0) handleDirection("ArrowRight")
+      else handleDirection("ArrowLeft")
+    } else {
+      if (dy > 0) handleDirection("ArrowDown")
+      else handleDirection("ArrowUp")
+    }
+
+    if ("vibrate" in navigator) navigator.vibrate(20)
+  }
+
   const startGame = () => {
     setSnake([{ x: 8, y: 8 }])
     setFood({ x: 12, y: 12 })
@@ -110,6 +150,7 @@ export default function Snake() {
         margin: "0 auto",
         background: "rgba(255,255,255,0.9)",
         borderRadius: "10px",
+        userSelect: "none",
       }}
     >
       <h3 className="mb-3">Snake</h3>
@@ -129,7 +170,10 @@ export default function Snake() {
           boxSizing: "border-box",
           margin: "0 auto",
           overflow: "hidden",
+          touchAction: "none",
         }}
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
       >
         {Array.from({ length: boardSize * boardSize }).map((_, index) => {
           const x = index % boardSize
@@ -156,7 +200,9 @@ export default function Snake() {
       </div>
 
       <div className="mt-3">
+        <h6>Use keyboard arrows or swipe screen</h6>
         <h5>Score: {score}</h5>
+        <h6 className="text-muted">High Score: {highScore}</h6>
         {isGameOver && <div className="text-danger fw-bold mt-2">Game Over!</div>}
       </div>
 
@@ -176,46 +222,6 @@ export default function Snake() {
         >
           <FaRedo /> Restart
         </button>
-      )}
-
-      {isRunning && !isGameOver && (
-        <div
-          className="d-flex flex-column align-items-center justify-content-center mt-4"
-          style={{ gap: "10px" }}
-        >
-          <button
-            className="btn btn-outline-dark p-3 rounded-circle"
-            style={{ width: "60px", height: "60px" }}
-            onClick={() => handleDirection("ArrowUp")}
-          >
-            <FaArrowUp />
-          </button>
-
-          <div className="d-flex justify-content-center" style={{ gap: "15px" }}>
-            <button
-              className="btn btn-outline-dark p-3 rounded-circle"
-              style={{ width: "60px", height: "60px" }}
-              onClick={() => handleDirection("ArrowLeft")}
-            >
-              <FaArrowLeft />
-            </button>
-            <button
-              className="btn btn-outline-dark p-3 rounded-circle"
-              style={{ width: "60px", height: "60px" }}
-              onClick={() => handleDirection("ArrowRight")}
-            >
-              <FaArrowRight />
-            </button>
-          </div>
-
-          <button
-            className="btn btn-outline-dark p-3 rounded-circle"
-            style={{ width: "60px", height: "60px" }}
-            onClick={() => handleDirection("ArrowDown")}
-          >
-            <FaArrowDown />
-          </button>
-        </div>
       )}
     </div>
   )

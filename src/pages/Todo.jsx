@@ -5,6 +5,7 @@ import { motion } from "framer-motion"
 export default function Todo() {
   const [tasks, setTasks] = useState([])
   const [newTask, setNewTask] = useState("")
+  const [draggedTask, setDraggedTask] = useState(null)
 
   useEffect(() => {
     const saved = localStorage.getItem("tasks")
@@ -19,7 +20,7 @@ export default function Todo() {
     e.preventDefault()
     if (!newTask.trim()) return
     const task = { id: Date.now(), text: newTask.trim(), done: false }
-    setTasks([task, ...tasks])
+    setTasks((prev) => [...prev, task])
     setNewTask("")
   }
 
@@ -29,6 +30,27 @@ export default function Todo() {
 
   const deleteTask = (id) => {
     setTasks(tasks.filter((t) => t.id !== id))
+  }
+
+  const handleDragStart = (task) => {
+    setDraggedTask(task)
+  }
+
+  const handleDragOver = (e, overTask) => {
+    e.preventDefault()
+    if (draggedTask.id === overTask.id) return
+
+    const updated = [...tasks]
+    const fromIndex = updated.findIndex((t) => t.id === draggedTask.id)
+    const toIndex = updated.findIndex((t) => t.id === overTask.id)
+    updated.splice(fromIndex, 1)
+    updated.splice(toIndex, 0, draggedTask)
+    setTasks(updated)
+  }
+
+  const handleDrop = () => {
+    setDraggedTask(null)
+    localStorage.setItem("tasks", JSON.stringify(tasks))
   }
 
   return (
@@ -62,7 +84,17 @@ export default function Todo() {
             {tasks.map((task) => (
               <li
                 key={task.id}
+                draggable
+                onDragStart={() => handleDragStart(task)}
+                onDragOver={(e) => handleDragOver(e, task)}
+                onDrop={handleDrop}
                 className="list-group-item d-flex justify-content-between align-items-center"
+                style={{
+                  cursor: "grab",
+                  userSelect: "none",
+                  backgroundColor: draggedTask?.id === task.id ? "#f0f0f0" : "white",
+                  transition: "background-color 0.2s",
+                }}
               >
                 <span
                   onClick={() => toggleTask(task.id)}
@@ -70,6 +102,7 @@ export default function Todo() {
                     textDecoration: task.done ? "line-through" : "none",
                     color: task.done ? "gray" : "black",
                     cursor: "pointer",
+                    flexGrow: 1,
                   }}
                 >
                   {task.text}
