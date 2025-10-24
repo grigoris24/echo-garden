@@ -1,4 +1,5 @@
 # Echo Garden
+(Not working in pages now because GitHub Pages doesn’t support client-side routing, I'll move it to a server soon)
 
 **Echo Garden** is an OS-like project — a space to explore, launch, and showcase web apps.  
 It includes a built-in **web radio player** that provides a calm background while working or browsing the projects, and a built-in **weather app**.
