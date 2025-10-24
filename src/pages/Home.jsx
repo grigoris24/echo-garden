@@ -137,7 +137,7 @@ export default function Home() {
       {apps.map((app, index) => {
         const nodeRef = useRef(null)
         const marginLeft = 20
-        const marginTop = 80
+        const marginTop = 20
         const spacing = 120
         const iconsPerRow = Math.floor(window.innerWidth / spacing) || 1
         const pos = positions[app.id] || clampPosition(

@@ -54,6 +54,19 @@ export default function Layout() {
   }, [])
 
   useEffect(() => {
+  if (audioRef.current) {
+    audioRef.current.pause() 
+    audioRef.current.src = radioUrl
+    if (isPlaying) {
+      audioRef.current
+        .play()
+        .then(() => console.log("Playing new station"))
+        .catch(() => setIsPlaying(false))
+    }
+  }
+}, [radioUrl])
+
+  useEffect(() => {
     const fetchWeatherData = () => {
       const apiKey = localStorage.getItem("weatherApiKey")
 
@@ -86,23 +99,26 @@ export default function Layout() {
       }
 
       if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          (pos) => {
-            const { latitude, longitude } = pos.coords
-            const url = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${apiKey}&units=metric`
-            fetchWeather(url)
-          },
-          () => {
-            const city = "Athens"
-            const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`
-            fetchWeather(url)
-          }
-        )
-      } else {
-        const city = "Athens"
-        const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`
-        fetchWeather(url)
-      }
+  navigator.geolocation.getCurrentPosition(
+    (pos) => {
+      const { latitude, longitude } = pos.coords
+      const unit = localStorage.getItem("weatherUnit") || "metric" 
+      const url = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${apiKey}&units=${unit}`
+      fetchWeather(url)
+    },
+    () => {
+      const city = "Athens"
+      const unit = localStorage.getItem("weatherUnit") || "metric" 
+      const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=${unit}`
+      fetchWeather(url)
+    }
+  )
+} else {
+  const city = "Athens"
+  const unit = localStorage.getItem("weatherUnit") || "metric" 
+  const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=${unit}`
+  fetchWeather(url)
+}
     }
 
     fetchWeatherData()

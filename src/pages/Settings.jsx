@@ -3,10 +3,18 @@ import { useState, useEffect } from "react"
 
 export default function Settings() {
   const { radioUrl, setRadioUrl, wallpaper, setWallpaper } = useOutletContext()
-  const [newUrl, setNewUrl] = useState(radioUrl)
+  const [selectedStation, setSelectedStation] = useState("")
   const [weatherApiKey, setWeatherApiKey] = useState("")
+  const [weatherUnit, setWeatherUnit] = useState("metric") 
   const [customWallpaper, setCustomWallpaper] = useState(null)
   const [showAlert, setShowAlert] = useState(false)
+
+  const stations = [
+    { name: "Zeppelin 106.7", url: "https://radiostreaming.ert.gr/ert-zeppelin" },
+    { name: "Red 96.3", url: "https://netradio.live24.gr/red9630" },
+    { name: "Rebel 105.2", url: "https://netradio.live24.gr/rebel1052" },
+    { name: "Rock 96.9", url: "https://az10.yesstreaming.net/radio/8060/radio.mp3" },
+  ]
 
   const builtInWallpapers = [
     { name: "Aurora", url: `${import.meta.env.BASE_URL}wallpapers/aurora.jpg` },
@@ -18,18 +26,29 @@ export default function Settings() {
   useEffect(() => {
     const savedUrl = localStorage.getItem("radioUrl")
     const savedWeatherKey = localStorage.getItem("weatherApiKey")
-    if (savedUrl) setNewUrl(savedUrl)
+    const savedWeatherUnit = localStorage.getItem("weatherUnit") || "metric"
+
+    if (savedUrl) {
+      setSelectedStation(savedUrl)
+      setRadioUrl(savedUrl)
+    } else {
+      const defaultStation = stations[0].url
+      setSelectedStation(defaultStation)
+      setRadioUrl(defaultStation)
+      localStorage.setItem("radioUrl", defaultStation)
+    }
+
     if (savedWeatherKey) setWeatherApiKey(savedWeatherKey)
+    setWeatherUnit(savedWeatherUnit)
   }, [])
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    setRadioUrl(newUrl)
-    localStorage.setItem("radioUrl", newUrl)
-
+    setRadioUrl(selectedStation)
+    localStorage.setItem("radioUrl", selectedStation)
     localStorage.setItem("weatherApiKey", weatherApiKey)
-    window.dispatchEvent(new Event("manual-update")) 
-
+    localStorage.setItem("weatherUnit", weatherUnit)
+    window.dispatchEvent(new Event("manual-update"))
     setShowAlert(true)
     setTimeout(() => setShowAlert(false), 3000)
   }
@@ -72,15 +91,19 @@ export default function Settings() {
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label className="form-label fw-bold text-secondary">
-              Web Radio Stream URL
+              Select Radio Station
             </label>
-            <input
-              type="text"
-              className="form-control"
-              value={newUrl}
-              onChange={(e) => setNewUrl(e.target.value)}
-              placeholder="https://example.com/stream.mp3"
-            />
+            <select
+              className="form-select"
+              value={selectedStation}
+              onChange={(e) => setSelectedStation(e.target.value)}
+            >
+              {stations.map((station, index) => (
+                <option key={index} value={station.url}>
+                  {station.name}
+                </option>
+              ))}
+            </select>
           </div>
 
           <hr className="my-4" />
@@ -102,6 +125,21 @@ export default function Settings() {
               </a>
             </small>
           </div>
+
+          <div className="mt-4">
+            <label className="form-label fw-bold text-secondary">
+              Temperature Unit
+            </label>
+            <select
+              className="form-select"
+              value={weatherUnit}
+              onChange={(e) => setWeatherUnit(e.target.value)}
+            >
+              <option value="metric">Celsius (°C)</option>
+              <option value="imperial">Fahrenheit (°F)</option>
+            </select>
+          </div>
+
 
           <div className="mt-4">
             <button type="submit" className="btn btn-primary">
@@ -180,7 +218,7 @@ export default function Settings() {
 
         <div className="text-center text-muted small">
           <p className="mb-1 fw-semibold text-dark">Echo Garden</p>
-          <p className="mb-1">Version 0.0.5</p>
+          <p className="mb-1">Version 0.0.6</p>
           <p className="mb-1">
             Created by <span className="fw-semibold">Grigoris Papadopoulos</span>
           </p>
