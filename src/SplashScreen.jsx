@@ -1,13 +1,18 @@
 import { motion } from "framer-motion"
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 
 export default function SplashScreen() {
   const [fadeOut, setFadeOut] = useState(false)
   const [done, setDone] = useState(false)
+  const hasRun = useRef(false)
 
   useEffect(() => {
+    if (hasRun.current) return
+    hasRun.current = true
+
     const timer1 = setTimeout(() => setFadeOut(true), 2000)
     const timer2 = setTimeout(() => setDone(true), 7000)
+
     return () => {
       clearTimeout(timer1)
       clearTimeout(timer2)
@@ -23,12 +28,11 @@ export default function SplashScreen() {
       animate={{ opacity: fadeOut ? 0 : 1 }}
       transition={{ duration: fadeOut ? 2 : 1, ease: "easeInOut" }}
     >
-     <img
+      <img
         src={`${import.meta.env.BASE_URL}splashscreen.png`}
         alt="Splash"
         className="splash-img"
-    />
-
+      />
     </motion.div>
   )
 }

@@ -3,6 +3,7 @@ import { createRoot } from "react-dom/client"
 import { createBrowserRouter, RouterProvider } from "react-router-dom"
 import "bootstrap/dist/css/bootstrap.min.css"
 import "./index.css"
+import { Navigate } from "react-router-dom"
 
 import Layout from "./Layout.jsx"
 import Home from "./pages/Home.jsx"
@@ -15,9 +16,11 @@ import Notes from "./pages/Notes.jsx"
 import Calendar from "./pages/Calendar.jsx"
 import TicTacToe from "./pages/TicTacToe.jsx"
 import Snake from "./pages/Snake.jsx"
+import Welcome from "./pages/Welcome.jsx"
 
 const router = createBrowserRouter(
   [
+    { path: "/welcome", element: <Welcome /> },
     {
       path: "/",
       element: <Layout />,
@@ -35,20 +38,35 @@ const router = createBrowserRouter(
     },
   ],
   {
-    basename: import.meta.env.MODE === 'production' ? '/echo-garden/' : '/',
+    basename: import.meta.env.MODE === "production" ? "/echo-garden/" : "/",
   }
 )
 
 
 function App() {
   const [loading, setLoading] = useState(true)
+  const [firstVisit, setFirstVisit] = useState(false)
 
   useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 3000) 
+    const hasVisited = localStorage.getItem("hasVisited")
+    if (!hasVisited) setFirstVisit(true)
+
+    const timer = setTimeout(() => setLoading(false), 3000)
     return () => clearTimeout(timer)
   }, [])
 
-  return loading ? <SplashScreen /> : <RouterProvider router={router} />
+  const isWelcomePage = window.location.pathname === "/welcome"
+
+  if (loading && !isWelcomePage) return <SplashScreen />
+
+  if (firstVisit && !isWelcomePage) {
+    window.location.href = "/welcome"
+    return null
+  }
+
+  return <RouterProvider router={router} />
 }
+
+
 
 createRoot(document.getElementById("root")).render(<App />)

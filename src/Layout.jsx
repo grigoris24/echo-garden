@@ -25,6 +25,8 @@ export default function Layout() {
   const [error, setError] = useState(null)
   const [wallpaper, setWallpaper] = useState(`${import.meta.env.BASE_URL}wallpapers/aurora.jpg`)
   const [menuOpen, setMenuOpen] = useState(false)
+  const [greeting, setGreeting] = useState("")
+  const [userName, setUserName] = useState(localStorage.getItem("userName") || "there")
   const audioRef = useRef(null)
   const navigate = useNavigate()
 
@@ -35,9 +37,33 @@ export default function Layout() {
   }
 
   useEffect(() => {
-    const timer = setInterval(() => setTime(new Date()), 1000)
-    return () => clearInterval(timer)
+    const updateTimeAndGreeting = () => {
+      const now = new Date()
+      setTime(now)
+      const hour = now.getHours()
+      if (hour < 12) setGreeting("Good morning")
+      else if (hour < 18) setGreeting("Good afternoon")
+      else setGreeting("Good evening")
+    }
+
+    updateTimeAndGreeting() 
+    const interval = setInterval(updateTimeAndGreeting, 60000)
+    return () => clearInterval(interval)
   }, [])
+
+  useEffect(() => {
+  const updateName = () => setUserName(localStorage.getItem("userName") || "there")
+
+  window.addEventListener("userNameUpdated", updateName)
+  window.addEventListener("storage", updateName) 
+  updateName() 
+
+  return () => {
+    window.removeEventListener("userNameUpdated", updateName)
+    window.removeEventListener("storage", updateName)
+  }
+}, [])
+
 
   const formattedTime = time.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
   const formattedDate = time.toLocaleDateString([], { weekday: "short", month: "short", day: "numeric" })
@@ -54,22 +80,21 @@ export default function Layout() {
   }, [])
 
   useEffect(() => {
-  if (audioRef.current) {
-    audioRef.current.pause() 
-    audioRef.current.src = radioUrl
-    if (isPlaying) {
-      audioRef.current
-        .play()
-        .then(() => console.log("Playing new station"))
-        .catch(() => setIsPlaying(false))
+    if (audioRef.current) {
+      audioRef.current.pause()
+      audioRef.current.src = radioUrl
+      if (isPlaying) {
+        audioRef.current
+          .play()
+          .then(() => console.log("Playing new station"))
+          .catch(() => setIsPlaying(false))
+      }
     }
-  }
-}, [radioUrl])
+  }, [radioUrl])
 
   useEffect(() => {
     const fetchWeatherData = () => {
       const apiKey = localStorage.getItem("weatherApiKey")
-
       if (!apiKey) {
         setError("no-key")
         setWeather(null)
@@ -99,26 +124,26 @@ export default function Layout() {
       }
 
       if (navigator.geolocation) {
-  navigator.geolocation.getCurrentPosition(
-    (pos) => {
-      const { latitude, longitude } = pos.coords
-      const unit = localStorage.getItem("weatherUnit") || "metric" 
-      const url = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${apiKey}&units=${unit}`
-      fetchWeather(url)
-    },
-    () => {
-      const city = "Athens"
-      const unit = localStorage.getItem("weatherUnit") || "metric" 
-      const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=${unit}`
-      fetchWeather(url)
-    }
-  )
-} else {
-  const city = "Athens"
-  const unit = localStorage.getItem("weatherUnit") || "metric" 
-  const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=${unit}`
-  fetchWeather(url)
-}
+        navigator.geolocation.getCurrentPosition(
+          (pos) => {
+            const { latitude, longitude } = pos.coords
+            const unit = localStorage.getItem("weatherUnit") || "metric"
+            const url = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${apiKey}&units=${unit}`
+            fetchWeather(url)
+          },
+          () => {
+            const city = "Athens"
+            const unit = localStorage.getItem("weatherUnit") || "metric"
+            const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=${unit}`
+            fetchWeather(url)
+          }
+        )
+      } else {
+        const city = "Athens"
+        const unit = localStorage.getItem("weatherUnit") || "metric"
+        const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=${unit}`
+        fetchWeather(url)
+      }
     }
 
     fetchWeatherData()
@@ -149,7 +174,34 @@ export default function Layout() {
         backgroundRepeat: "no-repeat",
       }}
     >
-      <main className="flex-grow-1 overflow-auto p-3 text-dark">
+      <header
+        className="bg-dark text-white py-2 px-3 d-flex justify-content-between align-items-center shadow-lg"
+        style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          width: "100%",
+          height: "50px",
+          zIndex: 10,
+        }}
+      >
+        <div className="fw-semibold" style={{ fontSize: "1.1rem" }}>
+          Echo Garden
+        </div>
+
+        <div
+          className="text-end"
+          style={{
+            fontSize: "1rem",
+            fontWeight: "500",
+            textShadow: "1px 1px 3px rgba(0,0,0,0.3)",
+          }}
+        >
+          {`${greeting}, ${userName}!`}
+        </div>
+      </header>
+
+      <main className="flex-grow-1 overflow-auto p-3 text-dark" style={{ marginTop: "50px" }}>
         <Outlet context={{ radioUrl, setRadioUrl, wallpaper, setWallpaper }} />
       </main>
 
@@ -209,10 +261,10 @@ export default function Layout() {
               <span className="tooltip-text">Tic Tac Toe</span>
             </NavLink>
 
-            <NavLink to="/snake" className={({ isActive }) => `taskbar-app ${isActive ? "active-app" : ""}`}> 
-              <FaGamepad /> 
-              <span className="tooltip-text">Snake</span> 
-            </NavLink> 
+            <NavLink to="/snake" className={({ isActive }) => `taskbar-app ${isActive ? "active-app" : ""}`}>
+              <FaGamepad />
+              <span className="tooltip-text">Snake</span>
+            </NavLink>
           </div>
         </div>
 
