@@ -18,7 +18,7 @@ Every element is built with attention to detail: soft animations, polished UI, a
 Echo Garden currently includes:
 - **Counter** — simple number counter  
 - **To-Do List** — track daily tasks  
-- **Calculator** — basic calculator with keyboard support  
+- **Calculator** — basic calculator 
 - **Notes** — quick note-taking app with persistence  
 - **Calendar** — minimal monthly planner  
 - **Tic Tac Toe** — classic two-player game  
