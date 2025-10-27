@@ -38,7 +38,7 @@ const router = createBrowserRouter(
     },
   ],
   {
-    basename: import.meta.env.MODE === "production" ? "/echo-garden/" : "/",
+    basename: import.meta.env.VITE_BASE_PATH || "/",
   }
 )
 
