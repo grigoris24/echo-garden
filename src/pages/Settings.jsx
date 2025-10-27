@@ -6,13 +6,14 @@ import { FaPen } from "react-icons/fa"
 export default function Settings() {
   const { radioUrl, setRadioUrl, wallpaper, setWallpaper } = useOutletContext()
   const [selectedStation, setSelectedStation] = useState("")
-  const [weatherApiKey, setWeatherApiKey] = useState("")
   const [weatherUnit, setWeatherUnit] = useState("metric")
   const [customWallpaper, setCustomWallpaper] = useState(null)
   const [showAlert, setShowAlert] = useState(false)
   const [userName, setUserName] = useState(localStorage.getItem("userName") || "")
   const [newName, setNewName] = useState("")
   const [showToast, setShowToast] = useState(false)
+
+  const WEATHER_API_KEY = "8170aa2f82fcbf0cefc5ce497f44dc2b"
 
   const stations = [
     { name: "Zeppelin 106.7", url: "https://radiostreaming.ert.gr/ert-zeppelin" },
@@ -30,7 +31,6 @@ export default function Settings() {
 
   useEffect(() => {
     const savedUrl = localStorage.getItem("radioUrl")
-    const savedWeatherKey = localStorage.getItem("weatherApiKey")
     const savedWeatherUnit = localStorage.getItem("weatherUnit") || "metric"
 
     if (savedUrl) {
@@ -43,7 +43,7 @@ export default function Settings() {
       localStorage.setItem("radioUrl", defaultStation)
     }
 
-    if (savedWeatherKey) setWeatherApiKey(savedWeatherKey)
+    localStorage.setItem("weatherApiKey", WEATHER_API_KEY)
     setWeatherUnit(savedWeatherUnit)
   }, [])
 
@@ -51,7 +51,7 @@ export default function Settings() {
     e.preventDefault()
     setRadioUrl(selectedStation)
     localStorage.setItem("radioUrl", selectedStation)
-    localStorage.setItem("weatherApiKey", weatherApiKey)
+    localStorage.setItem("weatherApiKey", WEATHER_API_KEY)
     localStorage.setItem("weatherUnit", weatherUnit)
     window.dispatchEvent(new Event("manual-update"))
     setShowAlert(true)
@@ -97,20 +97,19 @@ export default function Settings() {
         <div className="settings-window p-4 rounded-4 shadow-lg w-100" style={{ maxWidth: "900px" }}>
           <h2 className="mb-4">Settings</h2>
 
-         <div className="position-absolute top-0 end-0 p-3 d-flex flex-row align-items-center gap-2">
-          <p className="mb-0 small">
-            <strong>{userName || "Not set"}</strong>
-          </p>
-          <button
-            className="btn btn-sm btn-outline-primary d-flex align-items-center justify-content-center"
-            data-bs-toggle="modal"
-            data-bs-target="#changeNameModal"
-            style={{ width: "28px", height: "28px" }}
-          >
-            <FaPen size={12} />
-          </button>
-        </div>
-
+          <div className="position-absolute top-0 end-0 p-3 d-flex flex-row align-items-center gap-2">
+            <p className="mb-0 small">
+              <strong>{userName || "Not set"}</strong>
+            </p>
+            <button
+              className="btn btn-sm btn-outline-primary d-flex align-items-center justify-content-center"
+              data-bs-toggle="modal"
+              data-bs-target="#changeNameModal"
+              style={{ width: "28px", height: "28px" }}
+            >
+              <FaPen size={12} />
+            </button>
+          </div>
 
           {showAlert && (
             <div className="alert alert-success alert-dismissible fade show" role="alert">
@@ -136,24 +135,6 @@ export default function Settings() {
             </div>
 
             <hr className="my-4" />
-
-            <div className="mb-4">
-              <h5 className="text-muted mb-3">API Keys</h5>
-              <label className="form-label">Weather API Key</label>
-              <input
-                type="text"
-                className="form-control"
-                value={weatherApiKey}
-                onChange={(e) => setWeatherApiKey(e.target.value)}
-                placeholder="Enter your OpenWeatherMap API key"
-              />
-              <small className="text-muted">
-                Get a free key from{" "}
-                <a href="https://openweathermap.org/api" target="_blank" rel="noreferrer">
-                  openweathermap.org
-                </a>
-              </small>
-            </div>
 
             <div className="mt-4">
               <label className="form-label fw-bold text-secondary">Temperature Unit</label>

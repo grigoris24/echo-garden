@@ -5,7 +5,6 @@ import {
   FaPause,
   FaCog,
   FaCloudSun,
-  FaExclamationTriangle,
   FaHome,
   FaListAlt,
   FaCalculator,
@@ -30,6 +29,8 @@ export default function Layout() {
   const audioRef = useRef(null)
   const navigate = useNavigate()
 
+  const WEATHER_API_KEY = "8170aa2f82fcbf0cefc5ce497f44dc2b"
+
   const togglePlay = () => {
     if (!audioRef.current) return
     isPlaying ? audioRef.current.pause() : audioRef.current.play()
@@ -46,24 +47,21 @@ export default function Layout() {
       else setGreeting("Good evening")
     }
 
-    updateTimeAndGreeting() 
+    updateTimeAndGreeting()
     const interval = setInterval(updateTimeAndGreeting, 60000)
     return () => clearInterval(interval)
   }, [])
 
   useEffect(() => {
-  const updateName = () => setUserName(localStorage.getItem("userName") || "there")
-
-  window.addEventListener("userNameUpdated", updateName)
-  window.addEventListener("storage", updateName) 
-  updateName() 
-
-  return () => {
-    window.removeEventListener("userNameUpdated", updateName)
-    window.removeEventListener("storage", updateName)
-  }
-}, [])
-
+    const updateName = () => setUserName(localStorage.getItem("userName") || "there")
+    window.addEventListener("userNameUpdated", updateName)
+    window.addEventListener("storage", updateName)
+    updateName()
+    return () => {
+      window.removeEventListener("userNameUpdated", updateName)
+      window.removeEventListener("storage", updateName)
+    }
+  }, [])
 
   const formattedTime = time.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
   const formattedDate = time.toLocaleDateString([], { weekday: "short", month: "short", day: "numeric" })
@@ -93,55 +91,47 @@ export default function Layout() {
   }, [radioUrl])
 
   useEffect(() => {
-    const fetchWeatherData = () => {
-      const apiKey = localStorage.getItem("weatherApiKey")
-      if (!apiKey) {
-        setError("no-key")
-        setWeather(null)
-        return
-      }
-
-      const fetchWeather = (url) => {
-        fetch(url)
-          .then((res) => res.json())
-          .then((data) => {
-            if (data.cod === 200 || data.cod === "200") {
-              setWeather({
-                temp: Math.round(data.main.temp),
-                icon: `https://openweathermap.org/img/wn/${data.weather[0].icon}.png`,
-                city: data.name,
-              })
-              setError(null)
-            } else {
-              setError("invalid")
-              setWeather(null)
-            }
-          })
-          .catch(() => {
-            setError("failed")
+    const fetchWeather = (url) => {
+      fetch(url)
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.cod === 200 || data.cod === "200") {
+            setWeather({
+              temp: Math.round(data.main.temp),
+              icon: `https://openweathermap.org/img/wn/${data.weather[0].icon}.png`,
+              city: data.name,
+            })
+            setError(null)
+          } else {
+            setError("invalid")
             setWeather(null)
-          })
-      }
+          }
+        })
+        .catch(() => {
+          setError("failed")
+          setWeather(null)
+        })
+    }
+
+    const fetchWeatherData = () => {
+      const unit = localStorage.getItem("weatherUnit") || "metric"
 
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
           (pos) => {
             const { latitude, longitude } = pos.coords
-            const unit = localStorage.getItem("weatherUnit") || "metric"
-            const url = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${apiKey}&units=${unit}`
+            const url = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${WEATHER_API_KEY}&units=${unit}`
             fetchWeather(url)
           },
           () => {
             const city = "Athens"
-            const unit = localStorage.getItem("weatherUnit") || "metric"
-            const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=${unit}`
+            const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${WEATHER_API_KEY}&units=${unit}`
             fetchWeather(url)
           }
         )
       } else {
         const city = "Athens"
-        const unit = localStorage.getItem("weatherUnit") || "metric"
-        const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=${unit}`
+        const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${WEATHER_API_KEY}&units=${unit}`
         fetchWeather(url)
       }
     }
@@ -149,7 +139,7 @@ export default function Layout() {
     fetchWeatherData()
 
     const handleStorageChange = (e) => {
-      if (e.key === "weatherApiKey" || e.type === "manual-update") {
+      if (e.key === "weatherUnit" || e.type === "manual-update") {
         fetchWeatherData()
       }
     }
@@ -230,37 +220,30 @@ export default function Layout() {
               <FaHome />
               <span className="tooltip-text">Home</span>
             </NavLink>
-
             <NavLink to="/counter" className={({ isActive }) => `taskbar-app ${isActive ? "active-app" : ""}`}>
               <FaHashtag />
               <span className="tooltip-text">Counter</span>
             </NavLink>
-
             <NavLink to="/todo" className={({ isActive }) => `taskbar-app ${isActive ? "active-app" : ""}`}>
               <FaListAlt />
               <span className="tooltip-text">Todo List</span>
             </NavLink>
-
             <NavLink to="/calculator" className={({ isActive }) => `taskbar-app ${isActive ? "active-app" : ""}`}>
               <FaCalculator />
               <span className="tooltip-text">Calculator</span>
             </NavLink>
-
             <NavLink to="/notes" className={({ isActive }) => `taskbar-app ${isActive ? "active-app" : ""}`}>
               <FaRegStickyNote />
               <span className="tooltip-text">Notes</span>
             </NavLink>
-
             <NavLink to="/calendar" className={({ isActive }) => `taskbar-app ${isActive ? "active-app" : ""}`}>
               <FaCalendarAlt />
               <span className="tooltip-text">Calendar</span>
             </NavLink>
-
             <NavLink to="/tictactoe" className={({ isActive }) => `taskbar-app ${isActive ? "active-app" : ""}`}>
               <FaTimes />
               <span className="tooltip-text">Tic Tac Toe</span>
             </NavLink>
-
             <NavLink to="/snake" className={({ isActive }) => `taskbar-app ${isActive ? "active-app" : ""}`}>
               <FaGamepad />
               <span className="tooltip-text">Snake</span>
@@ -289,14 +272,7 @@ export default function Layout() {
           </button>
 
           <div className="d-flex align-items-center gap-2">
-            {error === "no-key" ? (
-              <FaExclamationTriangle
-                className="text-warning fs-4 pulse-warning"
-                onClick={() => navigate("/settings")}
-                style={{ cursor: "pointer" }}
-                title="Connect Weather API"
-              />
-            ) : weather ? (
+            {weather ? (
               <>
                 <img
                   src={weather.icon}
