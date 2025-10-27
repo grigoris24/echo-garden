@@ -1,6 +1,10 @@
 import { useState, useEffect } from "react"
 import { createRoot } from "react-dom/client"
-import { createBrowserRouter, RouterProvider, Navigate } from "react-router-dom"
+import {
+  createBrowserRouter,
+  RouterProvider,
+  Navigate,
+} from "react-router-dom"
 import "bootstrap/dist/css/bootstrap.min.css"
 import "./index.css"
 
@@ -17,31 +21,7 @@ import TicTacToe from "./pages/TicTacToe.jsx"
 import Snake from "./pages/Snake.jsx"
 import Welcome from "./pages/Welcome.jsx"
 
-const router = createBrowserRouter(
-  [
-    { path: "/welcome", element: <Welcome /> },
-    {
-      path: "/",
-      element: <Layout />,
-      children: [
-        { index: true, element: <Home /> },
-        { path: "counter", element: <Counter /> },
-        { path: "todo", element: <Todo /> },
-        { path: "calculator", element: <Calculator /> },
-        { path: "notes", element: <Notes /> },
-        { path: "settings", element: <Settings /> },
-        { path: "calendar", element: <Calendar /> },
-        { path: "tictactoe", element: <TicTacToe /> },
-        { path: "snake", element: <Snake /> },
-      ],
-    },
-  ],
-  {
-    basename: import.meta.env.VITE_BASE_PATH || "/",
-  }
-)
-
-function App() {
+function MainApp() {
   const [loading, setLoading] = useState(true)
   const [firstVisit, setFirstVisit] = useState(false)
 
@@ -55,11 +35,35 @@ function App() {
 
   if (loading) return <SplashScreen />
 
-  if (!loading && firstVisit && window.location.pathname !== "/welcome") {
-    return <Navigate to="/welcome" replace />
-  }
+  const router = createBrowserRouter(
+    [
+      {
+        path: "/",
+        element: firstVisit ? (
+          <Navigate to="/welcome" replace />
+        ) : (
+          <Layout />
+        ),
+        children: [
+          { index: true, element: <Home /> },
+          { path: "counter", element: <Counter /> },
+          { path: "todo", element: <Todo /> },
+          { path: "calculator", element: <Calculator /> },
+          { path: "notes", element: <Notes /> },
+          { path: "settings", element: <Settings /> },
+          { path: "calendar", element: <Calendar /> },
+          { path: "tictactoe", element: <TicTacToe /> },
+          { path: "snake", element: <Snake /> },
+        ],
+      },
+      { path: "/welcome", element: <Welcome /> },
+    ],
+    {
+      basename: import.meta.env.VITE_BASE_PATH || "/",
+    }
+  )
 
   return <RouterProvider router={router} />
 }
 
-createRoot(document.getElementById("root")).render(<App />)
+createRoot(document.getElementById("root")).render(<MainApp />)
