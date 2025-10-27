@@ -1,9 +1,8 @@
 import { useState, useEffect } from "react"
 import { createRoot } from "react-dom/client"
-import { createBrowserRouter, RouterProvider } from "react-router-dom"
+import { createBrowserRouter, RouterProvider, useNavigate } from "react-router-dom"
 import "bootstrap/dist/css/bootstrap.min.css"
 import "./index.css"
-import { Navigate } from "react-router-dom"
 
 import Layout from "./Layout.jsx"
 import Home from "./pages/Home.jsx"
@@ -42,6 +41,9 @@ const router = createBrowserRouter(
   }
 )
 
+function AppWrapper() {
+  return <RouterProvider router={router} />
+}
 
 function App() {
   const [loading, setLoading] = useState(true)
@@ -55,18 +57,14 @@ function App() {
     return () => clearTimeout(timer)
   }, [])
 
-  const isWelcomePage = window.location.pathname === "/welcome"
+  if (loading) return <SplashScreen />
 
-  if (loading && !isWelcomePage) return <SplashScreen />
-
-  if (firstVisit && !isWelcomePage) {
-    window.location.href = "/welcome"
-    return null
+  if (firstVisit) {
+    localStorage.setItem("hasVisited", "true")
+    return <Navigate to="/welcome" replace />
   }
 
-  return <RouterProvider router={router} />
+  return <AppWrapper />
 }
-
-
 
 createRoot(document.getElementById("root")).render(<App />)
