@@ -1,38 +1,53 @@
 # Echo Garden
-See it live in [echogarden-live.vercel.app](https://echogarden-live.vercel.app)
+See it live at [echogarden-live.vercel.app](https://echogarden-live.vercel.app)
 
-**Echo Garden** is an OS-like project — a space to explore, launch, and showcase web apps.  
-It includes a built-in **web radio player** that provides a calm background while working or browsing the projects, and a built-in **weather app**.
+**Echo Garden** is a browser-based mini operating system built with React.  
+It’s a space where you can open and explore a growing collection of small, interactive web apps — all wrapped in a clean, desktop-like interface with a built-in radio and live weather display.
 
 ---
 
 ## Overview
-Echo Garden acts as both a **project launcher** and a **development playground**.  
-It’s designed with simplicity and aesthetics in mind — combining functional structure with small UI touches that demonstrate frontend craftsmanship.
+Echo Garden started as a playground for frontend experiments and turned into a personal “digital desk.”  
+You can switch between apps, listen to music, and customize your environment — just like a lightweight web OS.
+
+Every element is built with attention to detail: soft animations, polished UI, and a calm overall vibe.
 
 ---
 
-## Features
-- Built-in radio player with customizable stream URL  
-- Built-in weather app
-- Persistent settings saved in the browser (via `localStorage`)  
-- Ability to choose your own wallpaper
-- Taskbar navigation
-- Responsive layout using Bootstrap  
-- Clean and minimal interface that adapts across screens  
+## Current Apps
+Echo Garden currently includes:
+- **Counter** — simple number counter  
+- **To-Do List** — track daily tasks  
+- **Calculator** — basic calculator with keyboard support  
+- **Notes** — quick note-taking app with persistence  
+- **Calendar** — minimal monthly planner  
+- **Tic Tac Toe** — classic two-player game  
+- **Snake** — the retro arcade game  
+- *(more apps coming soon!)*  
 
 ---
 
-##  Technologies
-- React (for component structure and routing)  
-- Bootstrap 5 (for layout and styling)  
-- HTML5 Audio API (for radio playback)  
-- Local Storage (for persistence)  
-- Vite (for development and build)  
+## Core Features
+- Built-in **radio player** with multiple stations  
+- Built-in **weather widget** (auto-detects location or uses fallback)  
+- Persistent user settings via **localStorage**  
+- Custom **wallpaper selector** (or upload your own)  
+- **Taskbar navigation** and responsive design  
+- Optimized for both desktop and mobile  
 
 ---
 
-## 🚀 Run Locally
+## Technologies
+- **React** — component architecture and routing  
+- **Vite** — fast dev environment and bundler  
+- **Bootstrap 5** — responsive layout and styling  
+- **Framer Motion** — animations and transitions  
+- **HTML5 Audio API** — for the radio player  
+- **LocalStorage** — for user preferences and data  
+
+---
+
+## Run Locally
 ```bash
 git clone https://github.com/grigoris24/echo-garden.git
 cd echo-garden
