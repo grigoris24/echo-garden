@@ -8,17 +8,19 @@ export default function Welcome() {
   const navigate = useNavigate()
 
   const handleSubmit = (e) => {
-    e.preventDefault()
-    if (!name.trim()) return
+  e.preventDefault()
+  if (!name.trim()) return
 
-    setFadeOut(true)
+  setFadeOut(true)
 
-    setTimeout(() => {
-      localStorage.setItem("userName", name)
-      localStorage.setItem("hasVisited", "true")
-      navigate("/")
-    }, 1000)
-  }
+  setTimeout(() => {
+    localStorage.setItem("userName", name)
+    localStorage.setItem("hasVisited", "true")
+    navigate("/")
+    window.location.reload()
+  }, 1000)
+}
+
 
   return (
     <AnimatePresence>
