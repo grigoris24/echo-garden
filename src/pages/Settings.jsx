@@ -1,4 +1,4 @@
-import { useOutletContext } from "react-router-dom"
+import { useOutletContext, useNavigate } from "react-router-dom"
 import { useState, useEffect } from "react"
 import "bootstrap/dist/js/bootstrap.bundle.min.js"
 import { FaPen } from "react-icons/fa"
@@ -13,6 +13,7 @@ export default function Settings() {
   const [newName, setNewName] = useState("")
   const [showToast, setShowToast] = useState(false)
 
+  const navigate = useNavigate()
   const WEATHER_API_KEY = "8170aa2f82fcbf0cefc5ce497f44dc2b"
 
   const stations = [
@@ -94,8 +95,18 @@ export default function Settings() {
   return (
     <>
       <div className="d-flex justify-content-center align-items-start pt-5">
-        <div className="settings-window p-4 rounded-4 shadow-lg w-100" style={{ maxWidth: "900px" }}>
-          <h2 className="mb-4">Settings</h2>
+        <div className="settings-window p-4 rounded-4 shadow-lg w-100 position-relative" style={{ maxWidth: "900px" }}>
+          
+        <button
+          type="button"
+          className="btn-close custom-hover position-absolute top-0 start-0 m-3 p-2 shadow-sm"
+          aria-label="Close"
+          onClick={() => navigate("/")}
+        ></button>
+
+
+
+          <h2 className="mb-4 text-center">Settings</h2>
 
           <div className="position-absolute top-0 end-0 p-3 d-flex flex-row align-items-center gap-2">
             <p className="mb-0 small">
